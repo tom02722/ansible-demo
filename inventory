@@ -1,0 +1,2 @@
+[wordpress]
+target1	ansible_host=10.100.200.21

@@ -1,0 +1,31 @@
+<?php
+define('DB_NAME', '{{ db_name }}');
+
+define('DB_USER', '{{ db_user }}');
+
+define('DB_PASSWORD', '{{ db_password }}');
+
+define('DB_HOST', 'localhost');
+
+define('DB_CHARSET', 'utf8mb4');
+
+define('DB_COLLATE', '');
+
+define('AUTH_KEY',         'IjY6]x?Muz](.5FdT>+.46UhCv+UG?B5xH@(CJ#vH]SKCCWpjdw975lAy{t zvrs');
+define('SECURE_AUTH_KEY',  '``8.oC_fl_>c)zh(E$;0sZ8_1V;^]_|w{|w(]CQ;u|cB=z>`*)_a4L|Mx9d111zs');
+define('LOGGED_IN_KEY',    ';;5M4%dH)tK9EVM[TZUK?,^S02hP?g]^?:dVn2;Z^VXip4nl~4N*T#VZ<P <(0j%');
+define('NONCE_KEY',        '[EuQf`=$qedHP}{JpiLc4_/#>Q^2*WBOCQiD,0G#gxyvYA>8I^AzndR(XL*Ov2o#');
+define('AUTH_SALT',        'FaV/ m_q$Q$Nzo.-=j6pay@I:{aS4H`up>} j(dzo7]1z7YgrbsYr_$iZq},wwKQ');
+define('SECURE_AUTH_SALT', '^P04#u?l]}gbzu@:Tcm&E$bC*UJl4Wd,]iEy.|A[X2%;T4|bNIi3 E32 t;K-wFh');
+define('LOGGED_IN_SALT',   '`)Ii`u1YoErJ)FhZif%QO_[/c&;$N7$[E2ZO]rLSfcMM#>HiB&cfA[oT|uEz!.i;');
+define('NONCE_SALT',       'i[hvt:-1lEZC2r024Pv!%z2zXR8hTmB,(2f:]NpQ8@^]Ztfyue_/>m hpsJF[w<V');
+
+$table_prefix  = 'wp_';
+
+define('WP_DEBUG', false);
+
+if ( !defined('ABSPATH') )
+	define('ABSPATH', dirname(__FILE__) . '/');
+
+require_once(ABSPATH . 'wp-settings.php');
+

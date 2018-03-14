@@ -1,0 +1,128 @@
+---
+- name: setting up wordpress
+  hosts: wordpress
+  become: yes
+  vars:
+    wordpress_url: https://ja.wordpress.org/wordpress-4.9.4-ja.tar.gz
+    packages:
+      - php
+      - php-mysql
+      - httpd
+      - mariadb
+      - mariadb-server
+      - MySQL-python
+      - firewalld
+    services:
+      - mariadb
+      - httpd
+    root_password: password
+    db_user: wp
+    db_password: wp
+    db_name: wordpress
+  
+  tasks:
+  - name: install packages
+    yum:
+      name: "{{ item }}"
+      state: latest
+    with_items: "{{ packages }}"
+  
+  - name: start firewalld service
+    systemd:
+      name: firewalld
+      state: started
+      enabled: yes
+
+  - name: setting firewalld
+    firewalld:
+      permanent: True
+      service: http
+      state: enabled
+      immediate: true
+  
+  - name: download archive file of wordpress
+    get_url:
+      url: "{{ wordpress_url }}"
+      dest: /tmp/wordpress.tar.gz
+  
+  - name: timezone configuration for OS
+    timezone:
+      name: Asia/Tokyo
+  
+  - name: timezone configuration
+    ini_file:
+      path: /etc/php.ini
+      section: Date
+      option: date.timezone
+      value: '"Asia/Tokyo"'
+   
+  - name: unpack wordpress
+    unarchive:
+      src: /tmp/wordpress.tar.gz
+      dest: /var/www/html/
+      copy: no
+  
+  - name: chown of wordpress files and directories
+    file:
+      path: /var/www/html/wordpress/
+      owner: apache
+      group: apache
+      recurse: yes
+  
+  - name: copy wordpress template file for root
+    template:
+      src: template/wp-config.php.j2
+      dest: /var/www/html/wordpress/wp-config.php
+      owner: apache
+      group: apache
+      mode: 0644
+  
+  - name: service restart
+    systemd:
+      name: "{{ item }}"
+      state: started
+      enabled: yes
+    with_items: "{{ services }}"
+  
+  - name: password change
+    mysql_user:
+      login_user: root
+    #  login_password: "{{ root_password }}"
+      login_password: ""
+      name: root
+      password: "{{ root_password }}"
+      host_all: yes
+
+  - name: copy template file for root
+    template:
+      src: template/root_my.cnf.j2
+      dest: /root/.my.cnf
+      owner: root
+      group: root
+      mode: 0600
+  
+  - name: copy template file
+    template:
+      src: template/my.cnf.j2
+      dest: /etc/my.cnf
+      owner: root
+      group: root
+      mode: 0644
+  
+  - name: create database
+    mysql_db:
+      login_user: root
+      login_password: "{{ root_password }}"
+      name: "{{ db_name }}"
+      state: present
+  
+  - name: create database users
+    mysql_user:
+      name: "{{ db_user }}"
+      password: "{{ db_password }}"
+      login_user: root
+      login_password: "{{ root_password }}"
+      priv: "{{ db_name }}.*:ALL"
+      state: present
+
+      
