@@ -1,0 +1,47 @@
+---
+- name: setting up wordpress
+  hosts: wordpress
+  become: yes
+  vars:
+    packages:
+      - php
+      - php-mysql
+      - httpd
+      - mariadb
+      - mariadb-server
+      - MySQL-python
+      - firewalld
+    services:
+      - mariadb
+      - httpd
+    root_password: password
+    db_user: wp
+    db_password: wp
+    db_name: wordpress
+  
+  tasks:
+  - name: install packages
+    yum:
+      name: "{{ item }}"
+      state: removed
+    with_items: "{{ packages }}"
+  
+  - name: delete download archive file of wordpress
+    file:
+      path: /tmp/wordpress.tar.gz
+      state: absent
+  
+  - name: chown of wordpress files and directories
+    file:
+      path: /var/www
+      state: absent
+  
+  - name: copy template file for root
+    file:
+      path: /root/.my.cnf
+      state: absent
+  
+  - name: copy template file
+    file:
+      path: /etc/my.cnf
+      state: absent
