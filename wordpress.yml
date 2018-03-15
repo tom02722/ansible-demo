@@ -87,8 +87,8 @@
   - name: password change
     mysql_user:
       login_user: root
-      login_password: "{{ root_password }}"
-    #  login_password: ""
+    #  login_password: "{{ root_password }}"
+      login_password: ""
       name: root
       password: "{{ root_password }}"
       host_all: yes
